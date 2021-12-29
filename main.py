@@ -1,12 +1,12 @@
-import findspark
 from pyspark.sql import SparkSession
 
 
 def main():
-    findspark.init()
+    # Load pyspark dataframe
     spark = SparkSession.builder.getOrCreate()
-    df = spark.sql("select 'spark' as hello")
+    df = spark.read.csv("nuclear_plants_small_dataset.csv", inferSchema=True, header=True)
     df.show()
+    df.printSchema()
 
 
 main()
