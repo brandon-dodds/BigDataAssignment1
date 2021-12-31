@@ -7,7 +7,17 @@ def main():
     spark = SparkSession.builder.getOrCreate()
     df = spark.read.csv("nuclear_plants_small_dataset.csv", inferSchema=True, header=True)
 
-    df.groupby("Status").count().show()
+    # names = df.schema.names
+    #
+    # for name in names[1:]:
+    #     df.filter(df.Status == "Normal").select(mean(name)).show()
+
+    data_mean = df.select(*[mean(c).alias(c) for c in df.columns[1:]])
+    data_max = df.select(*[max(c).alias(c) for c in df.columns[1:]])
+    data_min = df.select(*[min(c).alias(c) for c in df.columns[1:]])
+    data_variance = df.select(*[variance(c).alias(c) for c in df.columns[1:]])
+    data_median = df.approxQuantile([c for c in df.columns[1:]], [0.5], 0.25)
+    print(data_median)
 
 
 main()
