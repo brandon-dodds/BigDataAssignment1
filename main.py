@@ -14,8 +14,7 @@ def prepare_summary_statistics(column):
     rows = column.summary().collect()
     return_modes(column)
     col_min, col_max, col_mean, col_median, col_variance = rows[3][1], rows[7][1], rows[1][1], rows[5][1], rows[2][1]
-    table_data.extend([col_min, col_max, col_mean, col_mode, col_median, col_variance])
-    return table_data
+    return col_min, col_max, col_mean, col_median, col_mode, col_variance
 
 
 def main():
@@ -28,7 +27,13 @@ def main():
 
     for c in df.columns[1:]:
         df_col = df_normal.select(c)
-        prepare_summary_statistics(df_col)
+        col_min, col_max, col_mean, col_median, col_mode, col_variance = prepare_summary_statistics(df_col)
+        print(f"{c} "
+              f"minimum = {col_min} "
+              f"max = {col_max} "
+              f"median = {col_median} "
+              f"modes = {[x[0] for x in col_mode]} "
+              f"std deviation = {col_variance} ")
 
 
 main()
