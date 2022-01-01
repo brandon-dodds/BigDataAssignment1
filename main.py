@@ -4,8 +4,7 @@ from statistics import multimode
 
 def return_modes(column):
     column_vals = column.collect()
-    vals = [x[0] for x in column_vals]
-    return multimode(vals)
+    return multimode(column_vals)
 
 
 def prepare_summary_statistics(column):
