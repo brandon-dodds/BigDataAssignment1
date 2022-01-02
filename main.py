@@ -15,7 +15,7 @@ def prepare_summary_statistics(column):
     rows = column.summary().collect()
     return_modes(column)
     col_min, col_max, col_mean, col_median, col_variance = rows[3][1], rows[7][1], rows[1][1], rows[5][1], rows[2][1]
-    return col_min, col_max, col_mean, col_median, col_mode, col_variance
+    return col_min, col_max, col_mean, col_median, col_mode, float(col_variance)**2
 
 
 def main():
