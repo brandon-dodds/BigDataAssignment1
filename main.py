@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 from statistics import multimode
+import csv
 
 
 def return_modes(column):
@@ -10,7 +11,7 @@ def return_modes(column):
 def prepare_summary_statistics(column):
     table_data = []
     # column_summary.show()
-    col_mode = return_modes(column)
+    col_mode = [x[0] for x in return_modes(column)]
     rows = column.summary().collect()
     return_modes(column)
     col_min, col_max, col_mean, col_median, col_variance = rows[3][1], rows[7][1], rows[1][1], rows[5][1], rows[2][1]
@@ -24,16 +25,16 @@ def main():
 
     df_normal = df.filter(df.Status == "Normal")
     df_abnormal = df.filter(df.Status == "Abnormal")
-
-    for c in df.columns[1:]:
-        df_col = df_normal.select(c)
-        col_min, col_max, col_mean, col_median, col_mode, col_variance = prepare_summary_statistics(df_col)
-        print(f"{c} "
-              f"minimum = {col_min} "
-              f"max = {col_max} "
-              f"median = {col_median} "
-              f"modes = {[x[0] for x in col_mode]} "
-              f"std deviation = {col_variance} ")
+    with open('data.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['type', 'name', 'minimum', 'maximum', 'mean', 'median', 'modes', 'variance'])
+        for c in df.columns[1:]:
+            df_normal_col = df_normal.select(c)
+            df_abnormal_col = df_abnormal.select(c)
+            col_min, col_max, col_mean, col_median, col_mode, col_variance = prepare_summary_statistics(df_normal_col)
+            writer.writerow(['normal', c, col_min, col_max, col_mean, col_median, col_mode, col_variance])
+            col_min, col_max, col_mean, col_median, col_mode, col_variance = prepare_summary_statistics(df_abnormal_col)
+            writer.writerow(['abnormal', c, col_min, col_max, col_mean, col_median, col_mode, col_variance])
 
 
 main()
