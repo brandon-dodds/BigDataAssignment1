@@ -19,12 +19,6 @@ def prepare_summary_statistics(column):
     return col_min, col_max, col_mean, col_median, col_mode, float(col_variance) ** 2
 
 
-def box_plot(column):
-    rows = column.summary("min", "25%", "50%", "75%", "max").collect()
-    minimum, quarter_one, median, quarter_two, maximum = rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[4][1]
-    plt.boxplot([minimum, quarter_one, median, quarter_two, maximum])
-
-
 def main():
     # Load pyspark dataframe
     spark = SparkSession.builder.getOrCreate()
@@ -42,8 +36,11 @@ def main():
             writer.writerow(['normal', c, col_min, col_max, col_mean, col_median, col_mode, col_variance])
             col_min, col_max, col_mean, col_median, col_mode, col_variance = prepare_summary_statistics(df_abnormal_col)
             writer.writerow(['abnormal', c, col_min, col_max, col_mean, col_median, col_mode, col_variance])
-            box_plot(df_abnormal_col)
-            box_plot(df_normal_col)
+    df_normal.toPandas().boxplot()
+    plt.xlabel("normal")
+    plt.show()
+    df_abnormal.toPandas().boxplot()
+    plt.xlabel("abnormal")
     plt.show()
 
 
