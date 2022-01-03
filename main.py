@@ -15,7 +15,12 @@ def prepare_summary_statistics(column):
     rows = column.summary().collect()
     return_modes(column)
     col_min, col_max, col_mean, col_median, col_variance = rows[3][1], rows[7][1], rows[1][1], rows[5][1], rows[2][1]
-    return col_min, col_max, col_mean, col_median, col_mode, float(col_variance)**2
+    return col_min, col_max, col_mean, col_median, col_mode, float(col_variance) ** 2
+
+
+def box_plot(column):
+    rows = column.summary("min", "25%", "50%", "75%", "max").collect()
+    minimum, quarter_one, median, quarter_two, maximum = rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[4][1]
 
 
 def main():
