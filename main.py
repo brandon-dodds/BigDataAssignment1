@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from statistics import multimode
 import csv
+from matplotlib import pyplot as plt
 
 
 def return_modes(column):
@@ -12,15 +13,16 @@ def prepare_summary_statistics(column):
     table_data = []
     # column_summary.show()
     col_mode = [x[0] for x in return_modes(column)]
-    rows = column.summary().collect()
+    rows = column.summary("min", "max", "mean", "50%", "stddev").collect()
     return_modes(column)
-    col_min, col_max, col_mean, col_median, col_variance = rows[3][1], rows[7][1], rows[1][1], rows[5][1], rows[2][1]
+    col_min, col_max, col_mean, col_median, col_variance = rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[4][1]
     return col_min, col_max, col_mean, col_median, col_mode, float(col_variance) ** 2
 
 
 def box_plot(column):
     rows = column.summary("min", "25%", "50%", "75%", "max").collect()
     minimum, quarter_one, median, quarter_two, maximum = rows[0][1], rows[1][1], rows[2][1], rows[3][1], rows[4][1]
+    plt.boxplot([minimum, quarter_one, median, quarter_two, maximum])
 
 
 def main():
@@ -40,6 +42,9 @@ def main():
             writer.writerow(['normal', c, col_min, col_max, col_mean, col_median, col_mode, col_variance])
             col_min, col_max, col_mean, col_median, col_mode, col_variance = prepare_summary_statistics(df_abnormal_col)
             writer.writerow(['abnormal', c, col_min, col_max, col_mean, col_median, col_mode, col_variance])
+            box_plot(df_abnormal_col)
+            box_plot(df_normal_col)
+    plt.show()
 
 
 main()
