@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.stat import Correlation
 from pyspark.ml.feature import VectorAssembler
+import seaborn as sn
 
 
 def main():
@@ -12,7 +13,7 @@ def main():
 
     # get correlation matrix
     matrix = Correlation.corr(df_vector, vector_col)
-    print(matrix.collect()[0]["pearson({})".format(vector_col)].values)
+    sn.heatmap(matrix.collect()[0]["pearson({})".format(vector_col)].values, annot=True)
 
 
 main()
