@@ -13,7 +13,7 @@ def create_matrix(dataset, x_label):
     # get correlation matrix
     matrix = Correlation.corr(df_vector, vector_col)
     sn.heatmap(matrix.collect()[0]["pearson({})".format(vector_col)].values.reshape(12, 12), annot=True)
-    plt.xlabel("Normal")
+    plt.xlabel(x_label)
     plt.show()
 
 
