@@ -19,8 +19,8 @@ def main():
     feature_indexer = \
         VectorIndexer(inputCol="features", outputCol="indexedFeatures", maxCategories=2).fit(feature_data)
     dt = DecisionTreeClassifier(labelCol="indexedLabel", featuresCol="indexedFeatures")
-    trainer = MultilayerPerceptronClassifier(maxIter=100, layers=[4, 5, 4, 3], blockSize=128, seed=1234, labelCol="indexedLabel")
-    lsvc = LinearSVC(maxIter=10, regParam=0.1, labelCol="indexedLabel")
+    trainer = MultilayerPerceptronClassifier(maxIter=1000, layers=[4, 5, 4, 3], labelCol="indexedLabel")
+    lsvc = LinearSVC(maxIter=1000, labelCol="indexedLabel")
     pipeline = Pipeline(stages=[label_indexer, feature_indexer, lsvc])
     model = pipeline.fit(df_train)
 
