@@ -1,5 +1,5 @@
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from pyspark.sql import SparkSession
-from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.classification import LinearSVC, DecisionTreeClassifier, MultilayerPerceptronClassifier
 from pyspark.ml.feature import VectorIndexer
@@ -21,8 +21,13 @@ def main():
     dt = DecisionTreeClassifier(labelCol="indexedLabel", featuresCol="indexedFeatures")
     trainer = MultilayerPerceptronClassifier(maxIter=1000, layers=[4, 5, 4, 3], labelCol="indexedLabel")
     lsvc = LinearSVC(maxIter=1000, labelCol="indexedLabel")
-    pipeline = Pipeline(stages=[label_indexer, feature_indexer, lsvc])
+    pipeline = Pipeline(stages=[label_indexer, feature_indexer, dt])
     model = pipeline.fit(df_train)
+    predictions = model.transform(df_test)
+    evaluator = MulticlassClassificationEvaluator(
+        labelCol="indexedLabel", predictionCol="prediction", metricName="accuracy")
+    accuracy = evaluator.evaluate(predictions)
+    print("Test Error = %g " % (1.0 - accuracy))
 
 
 main()
