@@ -30,7 +30,7 @@ def main():
     feature_indexer = \
         VectorIndexer(inputCol="features", outputCol="indexedFeatures", maxCategories=2).fit(feature_data)
     dt = DecisionTreeClassifier(labelCol="indexedLabel", featuresCol="indexedFeatures")
-    trainer = MultilayerPerceptronClassifier(maxIter=1000, layers=[4, 5, 4, 3], labelCol="indexedLabel")
+    trainer = MultilayerPerceptronClassifier(maxIter=1000, layers=[12, 5, 4, 2], labelCol="indexedLabel")
     lsvc = LinearSVC(maxIter=1000, labelCol="indexedLabel")
 
     prediction_dt = predictions(label_indexer, feature_indexer, df_train, df_test, dt)
