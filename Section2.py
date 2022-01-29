@@ -18,6 +18,15 @@ def errors(evaluator, prediction, name):
     return f"Test Error {name} = %g " % (1.0 - accuracy)
 
 
+def specificity_and_sensitivity(prediction):
+    prediction_and_labels = prediction.select("indexedLabel", "prediction")
+    tp = prediction_and_labels.filter("indexedLabel == '1.0' AND prediction == '1.0'").count()
+    fn = prediction_and_labels.filter("indexedLabel == '1.0' AND prediction == '0.0'").count()
+    tn = prediction_and_labels.filter("indexedLabel == '0.0' AND prediction == '0.0'").count()
+    fp = prediction_and_labels.filter("indexedLabel == '0.0' AND prediction == '1.0'").count()
+    return tp / (tp + fn), tn / (tn + fp)
+
+
 def main():
     spark = SparkSession.builder.getOrCreate()
     df = spark.read.csv("nuclear_plants_small_dataset.csv", inferSchema=True, header=True)
@@ -42,6 +51,7 @@ def main():
     print(errors(evaluator, prediction_dt, "Decision Tree"))
     print(errors(evaluator, prediction_trainer, "Multilayer Perceptron"))
     print(errors(evaluator, prediction_lsvc, "Support Vector Machine"))
+    print(specificity_and_sensitivity(prediction_lsvc))
 
 
 main()
