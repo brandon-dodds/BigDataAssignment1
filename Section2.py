@@ -34,7 +34,7 @@ def main():
     feature_data = feature_assembler.transform(df)
 
     df_train, df_test = feature_data.randomSplit([0.7, 0.3])
-
+    print(df_train.count(), df_test.count())
     label_indexer = StringIndexer(inputCol=df.columns[0], outputCol="indexedLabel").fit(feature_data)
     feature_indexer = \
         VectorIndexer(inputCol="features", outputCol="indexedFeatures", maxCategories=2).fit(feature_data)
@@ -48,10 +48,15 @@ def main():
 
     evaluator = MulticlassClassificationEvaluator(
         labelCol="indexedLabel", predictionCol="prediction", metricName="accuracy")
-    print(errors(evaluator, prediction_dt, "Decision Tree"), specificity_and_sensitivity(prediction_dt))
-    print(errors(evaluator, prediction_trainer, "Multilayer Perceptron"),
-          specificity_and_sensitivity(prediction_trainer))
-    print(errors(evaluator, prediction_lsvc, "Support Vector Machine"), specificity_and_sensitivity(prediction_lsvc))
+    print(errors(evaluator, prediction_dt, "Decision Tree"), "sensitivity: ",
+          specificity_and_sensitivity(prediction_dt)[0], "specificity: ",
+          specificity_and_sensitivity(prediction_dt)[1])
+    print(errors(evaluator, prediction_trainer, "ANN"), "sensitivity: ",
+          specificity_and_sensitivity(prediction_trainer)[0], "specificity: ",
+          specificity_and_sensitivity(prediction_trainer)[1])
+    print(errors(evaluator, prediction_lsvc, "Support Vector Machine"), "sensitivity: ",
+          specificity_and_sensitivity(prediction_lsvc)[0], "specificity: ",
+          specificity_and_sensitivity(prediction_lsvc)[1])
 
 
 main()
