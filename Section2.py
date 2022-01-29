@@ -49,7 +49,8 @@ def main():
     evaluator = MulticlassClassificationEvaluator(
         labelCol="indexedLabel", predictionCol="prediction", metricName="accuracy")
     print(errors(evaluator, prediction_dt, "Decision Tree"), specificity_and_sensitivity(prediction_dt))
-    print(errors(evaluator, prediction_trainer, "Multilayer Perceptron"), specificity_and_sensitivity(prediction_trainer))
+    print(errors(evaluator, prediction_trainer, "Multilayer Perceptron"),
+          specificity_and_sensitivity(prediction_trainer))
     print(errors(evaluator, prediction_lsvc, "Support Vector Machine"), specificity_and_sensitivity(prediction_lsvc))
 
 
