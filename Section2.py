@@ -36,7 +36,7 @@ def main():
     df_train, df_test = feature_data.randomSplit([0.7, 0.3])
     print("Abnormal Train:", df_train.filter('Status == "Abnormal"').count(), "Normal Train:",
           df_train.filter('Status == "Normal"').count())
-    print("Abnormal Test:", df_test.filter('Status == "Abnormal"').count(), "Abnormal Test:",
+    print("Abnormal Test:", df_test.filter('Status == "Abnormal"').count(), "Normal Test:",
           df_test.filter('Status == "Normal"').count())
     label_indexer = StringIndexer(inputCol=df.columns[0], outputCol="indexedLabel").fit(feature_data)
     feature_indexer = \
